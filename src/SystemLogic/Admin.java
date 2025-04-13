@@ -22,6 +22,16 @@ public class Admin extends User {
         return this.password;
     }
 
+    //added setters
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
     public void approveSignUp(){
         ArrayList<Client> pendingClients = ClientRepository.getClientByStatus("pending");
         Client chosenClient=null;
