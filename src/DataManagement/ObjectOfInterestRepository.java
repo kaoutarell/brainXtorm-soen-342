@@ -25,7 +25,7 @@ public class ObjectOfInterestRepository {
     //CREATE
     public static void saveObject(ObjectOfInterest object) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(object.toString());
+            writer.write(object.toCSV());
             writer.newLine();
         } catch (IOException e) {
             System.out.println("Error saving object: " + e.getMessage());
@@ -81,7 +81,7 @@ public class ObjectOfInterestRepository {
     private static void overwriteFile(List<ObjectOfInterest> objects) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (ObjectOfInterest obj : objects) {
-                writer.write(obj.toString());
+                writer.write(obj.toCSV());
                 writer.newLine();
             }
         } catch (IOException e) {
