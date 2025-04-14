@@ -45,22 +45,18 @@ public class ObjectOfInterest {
         this.owned=!this.owned;
     }
 
-    public boolean add(){
-       return ObjectOfInterestRepository.addObject(this);
+    public void add(){
+       ObjectOfInterestRepository.saveObject(this);
     }
 
-    public boolean delete(){
-        return ObjectOfInterestRepository.deleteObject(this);
+    public void delete(){
+        ObjectOfInterestRepository.deleteObject(this);
     }
 
-    public boolean update(){
-        return ObjectOfInterestRepository.updateObject(this);
+    public void update(){
+        ObjectOfInterestRepository.updateObject(this);}
     public void setOwned(boolean owned) {
         this.owned = owned;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public void buyObject(){

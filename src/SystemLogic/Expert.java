@@ -1,5 +1,7 @@
 package SystemLogic;
 
+import DataManagement.ExpertRepository;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,14 +53,14 @@ public class Expert extends User {
     }
 
     public boolean add(){
-        return ExpertRepository.addExpert(this);
+        return ExpertRepository.createExpert(this);
     }
 
     public boolean delete(){
-        return ExpertRepository.deleteExpert(this);
+        return ExpertRepository.deleteExpert(this.id);
     }
 
-    public boolean update(String username, String password, String name, int licenseNumber, String contactInfo, List<String> expertise){
+    public boolean update(String username, String password, String name, int licenseNumber, String contactInfo, List<AreaOfExpertise> expertise){
         this.name = name;
         this.licenseNumber = licenseNumber;
         this.contactInfo = contactInfo;

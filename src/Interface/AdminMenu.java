@@ -6,11 +6,9 @@ import DataManagement.ExpertRepository;
 import DataManagement.ObjectOfInterestRepository;
 import SystemLogic.*;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class AdminMenu extends Menu{
 
@@ -113,12 +111,9 @@ public class AdminMenu extends Menu{
                     System.out.println("Invalid output");
                     return;
             }
-            boolean response = selectedObject.update();
-            if (response){
-                System.out.println("Object updated");
-            }else{
-                System.out.println("Failed to update object");
-            }
+            selectedObject.update();
+            System.out.println("Object updated");
+
         }catch (Exception e){
             System.out.println("Invalid input");
         }
@@ -130,12 +125,8 @@ public class AdminMenu extends Menu{
         Scanner scan = new Scanner(System.in);
         String description=scan.nextLine();
         ObjectOfInterest object = new ObjectOfInterest(false, description);
-        boolean response = object.add();
-        if (response){
-            System.out.println("Object created");
-        }else{
-            System.out.println("Failed to create object");
-        }
+        object.add();
+        System.out.println("Object created");
     }
 
     private void deleteObject(){
@@ -147,12 +138,8 @@ public class AdminMenu extends Menu{
         Scanner scan = new Scanner(System.in);
         String input = scan.nextLine();
         try{
-            boolean response = objects.get(Integer.parseInt(input)).delete();
-            if (response){
-                System.out.println("Object deleted");
-            }else{
-                System.out.println("Failed to delete object");
-            }
+            objects.get(Integer.parseInt(input)).delete();
+            System.out.println("Object deleted");
         }catch (Exception e){
             System.out.println("Invalid input");
         }
@@ -207,11 +194,11 @@ public class AdminMenu extends Menu{
         System.out.println("Enter contact info:");
         String contactInfo=scan.nextLine();
         System.out.println("Enter list of expertise. Write \"exit\" when the list is complete.");
-        ArrayList<String> expertise = new ArrayList<>();
+        ArrayList<AreaOfExpertise> expertise = new ArrayList<>();
         String input = "";
         while(!input.equalsIgnoreCase("exit")){
             input = scan.nextLine();
-            expertise.add(input);
+            expertise.add(new AreaOfExpertise("Expertise", input));
         }
         Expert expert = new Expert(username, password, name, licenceNumber, contactInfo, expertise);
         boolean response = expert.add();
@@ -250,11 +237,11 @@ public class AdminMenu extends Menu{
             System.out.println("Enter contact info:");
             String contactInfo=scan.nextLine();
             System.out.println("Enter list of expertise. Write \"exit\" when the list is complete.");
-            ArrayList<String> expertise = new ArrayList<>();
+            ArrayList<AreaOfExpertise> expertise = new ArrayList<>();
             input = "";
             while(!input.equalsIgnoreCase("exit")){
                 input = scan.nextLine();
-                expertise.add(input);
+                expertise.add(new AreaOfExpertise("Expertise", input));
             }
             boolean response = selectedExpert.update(username, password, name, licenceNumber, contactInfo, expertise);
             if (response){
@@ -316,14 +303,14 @@ public class AdminMenu extends Menu{
         String name = scan.nextLine();
         System.out.println("Enter the date of the auction (yyyy-MM-dd)");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date startDate;
-        Date endDate;
+        Timestamp startDate;
+        Timestamp endDate;
         try{
             String day = scan.nextLine();
             System.out.println("Enter the start time (HH:mm:ss)");
-            startDate = format.parse(day+" "+scan.nextLine());
+            startDate = Timestamp.valueOf(day+" "+scan.nextLine());
             System.out.println("Enter the end time (HH:mm:ss)");
-            endDate = format.parse(day+" "+scan.nextLine());
+            endDate = Timestamp.valueOf(day+" "+scan.nextLine());
         }catch(Exception e){
             System.out.println("Invalid input");
             return;
@@ -331,8 +318,17 @@ public class AdminMenu extends Menu{
         System.out.println("Enter the specialty");
         String specialty = scan.nextLine();
         System.out.println("Enter the type (online/in person)");
-        String type = scan.nextLine();
-        ArrayList<AuctionHouse> houses = AuctionHouseRepository.getAllAuctionHouses();
+        String input = scan.nextLine();
+        Auction.AuctionType type;
+        if (input.equalsIgnoreCase("online")){
+            type=Auction.AuctionType.ONLINE;
+        } else if (input.equalsIgnoreCase("in person")) {
+            type= Auction.AuctionType.IN_PERSON;
+        }else{
+            type= Auction.AuctionType.NORMAL;
+        }
+
+        List<AuctionHouse> houses = AuctionHouseRepository.getAllHouses();
         for (int i = 0; i< Objects.requireNonNull(houses).size(); i++){
             System.out.println(i+". "+houses.get(i).toString());
         }
@@ -345,17 +341,13 @@ public class AdminMenu extends Menu{
             return;
         }
         Auction auction = new Auction(name, startDate, endDate, specialty, type, auctionHouse);
-        boolean response = auction.add();
-        if (response){
-            System.out.println("Auction created");
-        }else{
-            System.out.println("Failed to create auction");
-        }
+        auction.add();
+        System.out.println("Auction created");
 
     }
 
     private void deleteAuction(){
-        ArrayList<Auction> auctions = AuctionRepository.getAllAuctions();
+        List<Auction> auctions = AuctionRepository.getAllAuctions(AuctionHouseRepository.getAllHouses());
         Scanner scan = new Scanner(System.in);
         System.out.println("Select an auction to delete");
         for (int i=0;i<auctions.size();i++){
@@ -363,12 +355,8 @@ public class AdminMenu extends Menu{
         }
         try{
             Auction selectedAuction=auctions.get(Integer.parseInt(scan.nextLine()));
-            boolean response = selectedAuction.delete();
-            if (response){
-                System.out.println("Auction deleted");
-            }else{
-                System.out.println("Failed to delete auction");
-            }
+            selectedAuction.delete();
+            System.out.println("Auction deleted");
         }catch (Exception e){
             System.out.println("Invalid input");
         }
@@ -403,11 +391,11 @@ public class AdminMenu extends Menu{
         System.out.println("Enter a description");
         String description = scan.nextLine();
         AuctionHouse auctionHouse = new AuctionHouse(location, description);
-        boolean response = auctionHouse.add();
+        auctionHouse.add();
     }
 
     private void deleteAuctionHouse(){
-        ArrayList<AuctionHouse> houses = AuctionHouseRepository.getAllAuctionHouses();
+        List<AuctionHouse> houses = AuctionHouseRepository.getAllHouses();
         Scanner scan = new Scanner(System.in);
         for (int i = 0; i< Objects.requireNonNull(houses).size(); i++){
             System.out.println(i+". "+houses.get(i).toString());

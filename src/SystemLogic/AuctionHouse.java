@@ -1,5 +1,7 @@
 package SystemLogic;
 
+import DataManagement.AuctionHouseRepository;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,34 +41,12 @@ public class AuctionHouse {
         return auctionList;
     }
 
-    public void addAuction(Auction auction) {
-        // Ensure auctions are limited to one day only --> Bonus point (Iteration 3)
-        LocalDate startDate = auction.getStartTime().toLocalDateTime().toLocalDate();
-        LocalDate endDate = auction.getEndTime().toLocalDateTime().toLocalDate();
-
-        if (!startDate.equals(endDate)) {
-            System.out.println("Invalid Auction: Auctions must start and end on the same day.");
-            return;
-        }
-
-        // Check for conflicts: 1. Same specialty 2. Same day 3.Same location | requirements
-        for (Auction a : auctionList) {
-            boolean sameSpecialty = a.getSpecialty().equalsIgnoreCase(auction.getSpecialty());
-            boolean sameDay = a.getStartTime().toLocalDateTime().toLocalDate().equals(startDate);
-            boolean timeOverlap = a.getEndTime().after(auction.getStartTime()) && a.getStartTime().before(auction.getEndTime());
-
-            if (sameSpecialty && sameDay && timeOverlap) {
-                System.out.println("Conflict: An auction of this specialty already exists at this location during this time.");
-                return;
-            }
-        }
-
-        auctionList.add(auction);
-        System.out.println("Auction added successfully to " + this.location);
+    public void add(){
+        AuctionHouseRepository.saveAuctionHouse(this);
     }
 
-
-    public String getAuctionHouseInfo() {
-        return "Location: " + this.location + "\nDescription: " + this.description;
+    public boolean delete(){
+        return AuctionHouseRepository.deleteAuctionHouse(this);
     }
+
 }
