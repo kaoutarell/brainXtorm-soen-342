@@ -1,15 +1,18 @@
 package Interface;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
+import DataManagement.AuctionHouseRepository;
 import DataManagement.AuctionRepository;
 import DataManagement.ClientRepository;
 import DataManagement.ExpertRepository;
 import DataManagement.ObjectOfInterestRepository;
 import SystemLogic.Admin;
 import SystemLogic.Auction;
+import SystemLogic.AuctionHouse;
 import SystemLogic.Client;
 import SystemLogic.Expert;
 import SystemLogic.ObjectOfInterest;
@@ -31,7 +34,9 @@ public abstract class Menu {
     }
 
     protected void seeAuctions(){
-        ArrayList<Auction> auctions = new ArrayList<>(AuctionRepository.getAllAuctions());
+        List<AuctionHouse> houses = AuctionHouseRepository.getAllHouses();
+        ArrayList<Auction> auctions = new ArrayList<>(AuctionRepository.getAllAuctions(houses));
+        //ArrayList<Auction> auctions = new ArrayList<>(AuctionRepository.getAllAuctions()); -- doesn't work anymore since an auction belongs to an auction house
         System.out.println("----------------------------Auctions----------------------------");
         for (Auction auction : auctions) {
             System.out.println(auction);

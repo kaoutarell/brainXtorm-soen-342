@@ -3,12 +3,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.sql.Timestamp;
 
+import DataManagement.AuctionHouseRepository;
+import DataManagement.AuctionRepository;
 import DataManagement.ExpertRepository;
+import DataManagement.ObjectOfInterestRepository;
 import SystemLogic.Admin;
 import SystemLogic.AreaOfExpertise;
+import SystemLogic.Auction;
+import SystemLogic.AuctionHouse;
 import SystemLogic.Client;
 import SystemLogic.Expert;
+import SystemLogic.ObjectOfInterest;
 import SystemLogic.User;
 
 
@@ -25,6 +32,7 @@ public class InstitutionConsole{
         testLoadAllExperts();
         testGetExpertById();
         testAdminLoginSimulation();
+        testAuctionInsertions();
         /*while (true){
             displayMainMenu();
         }*/ //temporary comment to test the new code
@@ -76,6 +84,67 @@ public class InstitutionConsole{
         System.out.println("Username: " + admin.getUsername());
         System.out.println("Password: " + admin.getPassword());
     }
+
+    //TEST #5 -- auctions - auction houses - objects of interest
+    public static void testAuctionInsertions() {
+    // Step 1: Create an Auction House
+    AuctionHouse house = new AuctionHouse("Big City Auction House", "New York");
+    AuctionHouseRepository.saveAuctionHouse(house); // you must implement this or store manually
+
+    // Step 2: Create some Objects
+    ObjectOfInterest obj1 = new ObjectOfInterest(true, "Ancient Vase");
+    ObjectOfInterest obj2 = new ObjectOfInterest(false, "Old Book");
+
+    ObjectOfInterestRepository.saveObject(obj1);
+    ObjectOfInterestRepository.saveObject(obj2);
+
+    // Step 3: Create Auctions (with and without objects)
+    Auction auction1 = new Auction(
+            "Antique Auction",
+            Timestamp.valueOf("2025-05-01 10:00:00"),
+            Timestamp.valueOf("2025-05-01 18:00:00"),
+            "Antiques",
+            Auction.AuctionType.ONLINE,
+            house,
+            obj1 // with object
+    );
+
+    Auction auction2 = new Auction(
+        "Antique Auction",
+        Timestamp.valueOf("2025-05-01 10:00:00"),
+        Timestamp.valueOf("2025-05-01 18:00:00"),
+        "Antiques",
+        Auction.AuctionType.ONLINE,
+        house,
+        new ArrayList<ObjectOfInterest>() // empty list
+    );
+
+
+
+
+    AuctionRepository.saveAuction(auction1);
+    AuctionRepository.saveAuction(auction2);
+
+    // display
+    List<Auction> auctions = AuctionRepository.getAllAuctions_(
+        AuctionHouseRepository.getAllHouses(), 
+        ObjectOfInterestRepository.getAllObjects() //passing all objects auctioned ..
+    );
+    for (Auction a : auctions) {
+        System.out.print("Auction: " + a.getName() + " | Objects: ");
+        if (a.getObjects() != null && !a.getObjects().isEmpty()) {
+            // all objects associated with the auction
+            for (ObjectOfInterest obj : a.getObjects()) {
+                System.out.print(obj.getDescription() + ", ");
+            }
+        } else {
+            System.out.print("None");
+        }
+        System.out.println(); // each auction in a line
+    }
+
+}
+
 
     private static void displayMainMenu(){
         menu.displayMenuOptions();
