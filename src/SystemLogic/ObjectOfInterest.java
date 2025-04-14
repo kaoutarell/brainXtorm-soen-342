@@ -1,5 +1,6 @@
 package SystemLogic;
 
+import DataManagement.ObjectOfInterestRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,10 @@ public class ObjectOfInterest {
         return id;
     }
 
+    public void setDescription(String description){
+        this.description=description;
+    }
+
     public boolean isOwned() {
         return owned;
     }
@@ -36,12 +41,22 @@ public class ObjectOfInterest {
         return description;
     }
 
-    public void setOwned(boolean owned) {
-        this.owned = owned;
+    public void switchOwnership(){
+        this.owned=!this.owned;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void add(){
+       ObjectOfInterestRepository.saveObject(this);
+    }
+
+    public void delete(){
+        ObjectOfInterestRepository.deleteObject(this);
+    }
+
+    public void update(){
+        ObjectOfInterestRepository.updateObject(this);}
+    public void setOwned(boolean owned) {
+        this.owned = owned;
     }
 
     public void buyObject(){

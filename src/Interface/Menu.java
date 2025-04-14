@@ -25,7 +25,7 @@ public abstract class Menu {
     public abstract int handleMenuInput(String input);
 
     protected void seeObjects(){
-        ArrayList<ObjectOfInterest> objects = new ArrayList<>(ObjectOfInterestRepository.getListOfObjects());
+        ArrayList<ObjectOfInterest> objects = new ArrayList<>(ObjectOfInterestRepository.getAllObjects());
         System.out.println("----------------------------Objects----------------------------");
         for (ObjectOfInterest objectOfInterest : objects) {
             System.out.println(objectOfInterest);
@@ -51,7 +51,7 @@ public abstract class Menu {
 
         ArrayList<Client> clients = new ArrayList<>(ClientRepository.getAllClients());
 
-        ArrayList<Expert> experts = new ArrayList<>(ExpertRepository.getAllExperts());
+        ArrayList<Expert> experts = ExpertRepository.getAllExperts();
 
         while(currentUser==null){
             System.out.println("Enter your username: ");

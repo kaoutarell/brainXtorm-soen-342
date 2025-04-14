@@ -1,4 +1,4 @@
 3660b1c3-c32d-457b-aaad-0d702192b06f,Alice,password123,alice@example.com,Affiliation1,9876543210,Service Intent 1,Approved
-b902a627-4e49-4747-8c0e-a5a1a41630ce,Bob,password456,bob@example.com,Affiliation2,1234567890,Service Intent 2,Pending
 9b257dc7-8831-44fb-b28e-4e4564357349,Charlie,password789,charlie@example.com,Affiliation3,1112233445,Service Intent 3,Pending
-b0f65684-dde4-4baf-873b-b01e25b198e4,jojo,verysafe,jojo@gmail.com,Speedwagon foundation,123456789,buy stuff,Pending
+b0f65684-dde4-4baf-873b-b01e25b198e4,jojo,verysafe,jojo@gmail.com,Speedwagon foundation,123456789,buy stuff,Approved
+59970cb3-d69b-4a88-8ca3-b67546cf297b,bob,123,bob@gmail.com,concordia,1234567890,buy stuff,Approved

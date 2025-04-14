@@ -6,10 +6,10 @@ import SystemLogic.Client;
 import java.io.*;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 public class ServiceRepository {
     private static final String FILE_PATH = "src/DataManagement/data/services.csv";
-    private static final String REQUESTS_FILE_PATH = "src/DataManagement/data/requests.csv";
 
     // Read all services from the CSV
     public static ArrayList<Service> getAllServices() {
@@ -18,12 +18,14 @@ public class ServiceRepository {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length == 5) { //id added 
+                if (data.length == 7) { //id added
                     Service service = new Service(
-                        Service.ServiceType.valueOf(data[0].toUpperCase()),
-                        new java.util.Date(Long.parseLong(data[1])),
-                        Service.ServiceStatus.valueOf(data[2].toUpperCase()),
-                        data[3]
+                        Service.ServiceType.valueOf(data[1].toUpperCase()),
+                        new java.util.Date(Long.parseLong(data[2])),
+                        new java.util.Date(Long.parseLong(data[3])),
+                        data[4],
+                            UUID.fromString(data[5]),
+                            UUID.fromString(data[6])
                     );
                     // Set the id manually 
                     service.setId(data[0]);
@@ -36,30 +38,32 @@ public class ServiceRepository {
         return services;
     }
 
+    public static ArrayList<Service> getServiceByExpert(UUID id){
+        ArrayList<Service> services = getAllServices();
+        ArrayList<Service> selected = new ArrayList<>();
+        for (Service service:services) {
+            if (service.getExpertId().equals(id)){
+                selected.add(service);
+            }
+        }
+        return selected;
+    }
+
+    public static ArrayList<Service> getServiceByClient(UUID id){
+        ArrayList<Service> services = getAllServices();
+        ArrayList<Service> selected = new ArrayList<>();
+        for (Service service:services) {
+            if (service.getClientId().equals(id)){
+                selected.add(service);
+            }
+        }
+        return selected;
+    }
+
     // Add a new service
     public static boolean createService(Service service) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(service.getServiceType() + "," + service.getServiceDate().getTime() + "," + service.getServiceStatus() + "," + service.getAddDetails());
-            writer.newLine();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public static boolean clientRequestService(Client client, Service service) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(REQUESTS_FILE_PATH, true))) {
-            // Format the date to a readable string (e.g., "2025-03-28 14:30:00")
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String formattedDate = sdf.format(service.getServiceDate());
-            
-            writer.write(service.getId() + "," +
-                        client.getEmail() + "," + 
-                        service.getServiceType() + "," + 
-                        formattedDate + "," +  // Use the formatted date - otherwise it prints : 1743191271971 
-                        service.getServiceStatus() + "," + 
-                        service.getAddDetails()); 
+            writer.write(service.getId() + "," + service.getServiceType() + "," + service.getStartTime().getTime() + "," + service.getEndTime().getTime() + "," + service.getAddDetails() + "," + service.getClientId() + "," + service.getExpertId());
             writer.newLine();
             return true;
         } catch (IOException e) {

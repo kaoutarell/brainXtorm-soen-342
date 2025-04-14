@@ -1,6 +1,7 @@
 package DataManagement;
 
 import SystemLogic.AuctionHouse;
+import SystemLogic.Client;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -39,6 +40,25 @@ public class AuctionHouseRepository {
             e.printStackTrace();
         }
         return houses;
+    }
+
+    public static boolean deleteAuctionHouse(AuctionHouse house){
+        List<AuctionHouse> houses = getAllHouses();
+        boolean deleted = false;
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HOUSE_FILE))) {
+            for (AuctionHouse currentHouse : houses) {
+                if (!currentHouse.equals(house)) {
+                    writer.write(currentHouse.toString());
+                    writer.newLine();
+                } else {
+                    deleted = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return deleted;
     }
 
     public static void deleteAllAuctionHouses() {

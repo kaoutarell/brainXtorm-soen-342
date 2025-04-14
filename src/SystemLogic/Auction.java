@@ -1,5 +1,8 @@
 package SystemLogic;
 
+import DataManagement.AuctionHouseRepository;
+import DataManagement.AuctionRepository;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +106,14 @@ public class Auction {
     //relationship with objects
     public List<ObjectOfInterest> getObjects() {
         return objects;
+    }
+
+    public void add(){
+        AuctionRepository.saveAuction(this);
+    }
+
+    public void delete(){
+        AuctionRepository.deleteAuctionByName(this.name, AuctionHouseRepository.getAllHouses());
     }
 
     public void addObject(ObjectOfInterest object) {

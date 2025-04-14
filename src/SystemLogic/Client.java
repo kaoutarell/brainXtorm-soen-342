@@ -1,20 +1,23 @@
 package SystemLogic;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 import DataManagement.ClientRepository;
 import DataManagement.ServiceRepository;
 
 public class Client extends User {
-    private String id;  // New field for UUID
+    private UUID id;  // New field for UUID
     private String email;
     private String affiliation;
     private String contactInfo;
     private String intent;
     private String status;
+    private ArrayList<Service> services;
 
     public Client(String username, String password, String email, String affiliation, String contactInfo, String intent) {
-        this.id = UUID.randomUUID().toString();  // id added
+        this.id = UUID.randomUUID();  // id added
         this.email = email;
         this.affiliation = affiliation;
         this.contactInfo = contactInfo;
@@ -22,10 +25,24 @@ public class Client extends User {
         this.status = "Pending"; 
         this.username = username;
         this.password = password;
+        this.services=new ArrayList<>();
+    }
+
+    public Client(UUID id, String username, String password, String email, String affiliation, String contactInfo, String intent) {
+        this.id = id;  // id added
+        this.email = email;
+        this.affiliation = affiliation;
+        this.contactInfo = contactInfo;
+        this.intent = intent;
+        this.status = "Pending";
+        this.username = username;
+        this.password = password;
+        this.services=ServiceRepository.getServiceByClient(id);
     }
 
     public void approve() {
         status = "Approved";
+        ClientRepository.updateClient(this);
     }
 
     public void displayClientInfo() {
@@ -67,7 +84,7 @@ public class Client extends User {
         return status;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -100,7 +117,12 @@ public class Client extends User {
         ClientRepository.createClient(this);
     }
 
-    public void requestService(Service service){
-        ServiceRepository.clientRequestService(this,service);
+    public boolean checkDoubleBooking(Date start, Date end){
+        for(Service service:services){
+            if(start.before(service.getStartTime())&&service.getStartTime().before(end)||service.getEndTime().before(end)&&start.before(service.getEndTime())){
+                return true;
+            }
+        }
+        return false;
     }
 }
