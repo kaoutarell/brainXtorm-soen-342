@@ -1,8 +1,6 @@
 package DataManagement;
 
 import SystemLogic.AuctionHouse;
-import SystemLogic.Client;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;

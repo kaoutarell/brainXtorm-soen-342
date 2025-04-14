@@ -1,21 +1,8 @@
 package Interface;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
-import java.sql.Timestamp;
-
-import DataManagement.AuctionHouseRepository;
-import DataManagement.AuctionRepository;
-import DataManagement.ExpertRepository;
-import DataManagement.ObjectOfInterestRepository;
 import SystemLogic.Admin;
-import SystemLogic.AreaOfExpertise;
-import SystemLogic.Auction;
-import SystemLogic.AuctionHouse;
 import SystemLogic.Client;
 import SystemLogic.Expert;
-import SystemLogic.ObjectOfInterest;
 import SystemLogic.User;
 
 
