@@ -22,6 +22,16 @@ public class Admin extends User {
         return this.password;
     }
 
+    //added setters
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
     public void approveSignUp(){
         ArrayList<Client> pendingClients = ClientRepository.getClientByStatus("pending");
         Client chosenClient=null;
@@ -33,44 +43,45 @@ public class Admin extends User {
         for (Client client: pendingClients) {
             System.out.println(i+": "+client.getUsername());
         }
-        Scanner scan = new Scanner(System.in);
-        try{
-            input = Integer.parseInt(scan.nextLine());
-            if (input>=pendingClients.size() || input<0){
+        try (Scanner scan = new Scanner(System.in)) {
+            try{
+                input = Integer.parseInt(scan.nextLine());
+                if (input>=pendingClients.size() || input<0){
+                    System.out.println("Invalid input");
+                    scan.close();
+                    approveSignUp();
+                    return;
+                }else{
+                    pendingClients.get(input).displayClientInfo();
+                }
+            }catch(Exception e){
                 System.out.println("Invalid input");
                 scan.close();
                 approveSignUp();
                 return;
-            }else{
-                pendingClients.get(input).displayClientInfo();
             }
-        }catch(Exception e){
-            System.out.println("Invalid input");
-            scan.close();
-            approveSignUp();
-            return;
-        }
-        chosenClient=pendingClients.get(input);
+            chosenClient=pendingClients.get(input);
 
-        while(choice==""){
-            System.out.println("1. Approve");
-            System.out.println("2. Deny");
-            System.out.println("3. Go Back");
-            choice = scan.nextLine();
+            while(choice==""){
+                System.out.println("1. Approve");
+                System.out.println("2. Deny");
+                System.out.println("3. Go Back");
+                choice = scan.nextLine();
 
-            switch (choice){
-                case "1":
-                    chosenClient.approve();
-                    break;
-                case "2":
-                    ClientRepository.deleteClient(chosenClient);
-                    break;
-                case "3":
-                    approveSignUp();
-                    return;
-                default:
-                    choice="";
-                    System.out.println("Invalid Input");
+                switch (choice){
+                    case "1":
+                        chosenClient.approve();
+                        break;
+                    case "2":
+                        ClientRepository.deleteClient(chosenClient);
+                        break;
+                    case "3":
+                        approveSignUp();
+                        return;
+                    default:
+                        choice="";
+                        System.out.println("Invalid Input");
+                }
             }
         }
 

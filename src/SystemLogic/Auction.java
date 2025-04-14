@@ -1,67 +1,126 @@
 package SystemLogic;
 
-import DataManagement.AuctionRepository;
-
-import java.util.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Auction {
     private String name;
-    private Date startTime;
-    private Date endTime;
+    private Timestamp startTime; //timestamp and not date only -> fixed
+    private Timestamp endTime;
     private String specialty;
-    private String type;
+    private AuctionType type; // "online" or "normal"
     private AuctionHouse house;
+    private List<ObjectOfInterest> objects;
 
-    public String getName(){
-        return this.name;
+    public enum AuctionType { //changed to limit input and reduce conditions
+    ONLINE, NORMAL, IN_PERSON
+}
+
+    public Auction(String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type, AuctionHouse house) {
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.specialty = specialty;
+        this.type = type;
+        this.house = house;
+        this.objects = new ArrayList<>();
     }
 
-    public Date getStartTime(){
-        return this.startTime;
+    public Auction(String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type,
+                   AuctionHouse house, List<ObjectOfInterest> associatedObjects) {
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.specialty = specialty;
+        this.type = type;
+        this.house = house;
+        this.objects = new ArrayList<>();
+
+        if (associatedObjects != null) {
+            for (ObjectOfInterest obj : associatedObjects) {
+                addObject(obj);  // bidirectional relationship
+            }
+        }
+    }
+    
+    // ensure objects list is initialized correctly  -- handles null lists 
+    public Auction(String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type,
+                   AuctionHouse house, ObjectOfInterest obj) {
+        this(name, startTime, endTime, specialty, type, house, obj != null ? new ArrayList<>(List.of(obj)) : new ArrayList<>());
     }
 
-    public Date getEndTime(){
-        return this.endTime;
+
+
+    public String getName() {
+        return name;
     }
 
-    public String getSpecialty(){
-        return this.specialty;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getType(){
-        return this.type;
+    public Timestamp getStartTime() {
+        return startTime;
     }
 
-    public AuctionHouse getHouse(){
-        return this.house;
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
     }
 
-
-    public Auction(String name, Date startTime, Date endTime, String specialty, String type, AuctionHouse house){
-        this.name=name;
-        this.startTime=startTime;
-        this.endTime=endTime;
-        this.specialty=specialty;
-        this.type=type;
-        this.house=house;
+    public Timestamp getEndTime() {
+        return endTime;
     }
 
-    public boolean add(){
-        return AuctionRepository.addAuction(this);
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 
-    public boolean delete(){
-        return AuctionRepository.deleteAuction(this);
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+    public AuctionType getType() {
+        return type;
+    }
+
+    public void setType(AuctionType type) {
+        this.type = type;
+    }
+
+    public AuctionHouse getHouse() {
+        return house;
+    }
+
+    public void setHouse(AuctionHouse house) {
+        this.house = house;
+    }
+
+    //relationship with objects
+    public List<ObjectOfInterest> getObjects() {
+        return objects;
+    }
+
+    public void addObject(ObjectOfInterest object) {
+        if (!objects.contains(object)) {
+            objects.add(object);
+            object.addAuction(this); // maintain bidirectional consistency
+        }
     }
 
     @Override
-    public String toString(){
-        return ("Auction Info\n" +
-                "Name: "+this.name+"\n" +
-                "Starting Time: "+this.startTime+"\n" +
-                "End Time: "+this.endTime+"\n" +
-                "Specialty: "+this.specialty+"\n" +
-                "Type: "+this.type+"\n");
+    public String toString() {
+        return "🎨 Auction Info:\n" +
+                "📛 Name: " + name + "\n" +
+                "📅 Date: " + startTime.toLocalDateTime().toLocalDate() + 
+                " from " + startTime.toLocalDateTime().toLocalTime() +
+                " to " + endTime.toLocalDateTime().toLocalTime() + "\n" +
+                "📍 Location: " + house.getLocation() + "\n" +
+                "🧭 Specialty: " + specialty + "\n" +
+                "🔌 Type: " + type + "\n";
     }
-
 }
