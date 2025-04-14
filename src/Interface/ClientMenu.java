@@ -1,11 +1,16 @@
 package Interface;
 
+import DataManagement.AuctionHouseRepository;
+import DataManagement.AuctionRepository;
+import DataManagement.ExpertRepository;
+import DataManagement.ServiceRepository;
+import SystemLogic.Auction;
 import SystemLogic.Client;
+import SystemLogic.Expert;
 import SystemLogic.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 
 public class ClientMenu extends Menu{
 
@@ -68,35 +73,81 @@ public class ClientMenu extends Menu{
             System.out.println("Enter service type: ");
             System.out.println("1. Consultation Service");
             System.out.println("2. Auction assistance service");
-            System.out.println("3. Visit assistance service");
             String input = scan.nextLine();
             switch (input) {
-                case "1" -> type = Service.ServiceType.CONSULTATION;
-                case "2" -> type = Service.ServiceType.AUCTION_ASSISTANCE;
-                case "3" -> type = Service.ServiceType.VISIT_ASSISTANCE;
-                default -> System.out.println("Invalid input");
+                case "1":
+                    type = Service.ServiceType.CONSULTATION;
+                    break;
+                case "2":
+                    type = Service.ServiceType.AUCTION_ASSISTANCE;
+                    break;
+                default:
+                    System.out.println("Invalid input");
+                    return;
             }
         }
 
+        Date start;
+        Date end;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date startDate=null;
+        String details;
 
-        while (startDate == null) {
-            System.out.println("Please enter a date and time (format: yyyy-MM-dd HH:mm:ss): ");
-            String input = scan.nextLine();
-            try {
-                startDate = dateFormat.parse(input);
-            } catch (Exception e) {
-                System.out.println("Invalid date/time format. Please try again.");
+        if(type== Service.ServiceType.CONSULTATION){
+            try{
+                System.out.println("Enter the start time (yyyy-MM-dd HH:mm:ss)");
+                start = dateFormat.parse(scan.nextLine());
+                System.out.println("Enter the end time (yyyy-MM-dd HH:mm:ss)");
+                end = dateFormat.parse(scan.nextLine());
+                System.out.println("Enter any additional details you like");
+                details = scan.nextLine();
+            }catch (Exception e){
+                System.out.println("Invalid input");
+                return;
+            }
+        }else{
+            System.out.println("Select an auction");
+            List<Auction> auctions = AuctionRepository.getAllAuctions(AuctionHouseRepository.getAllHouses());
+            for (int i=0;i< auctions.size();i++){
+                System.out.println(i+": "+auctions.get(i).toString());
+            }
+            try{
+                Auction currentAuction = auctions.get(Integer.parseInt(scan.nextLine()));
+                start = currentAuction.getStartTime();
+                end = currentAuction.getEndTime();
+                details = currentAuction.getName();
+            }catch (Exception e){
+                System.out.println("Invalid input");
+                return;
             }
         }
 
-        System.out.println("Enter any additional details you like");
-        String details = scan.nextLine();
+        boolean check = false;
+        UUID expertID=UUID.randomUUID();
 
-        Service service = new Service(type, startDate, Service.ServiceStatus.PENDING, details);
+        ArrayList<Expert> experts = ExpertRepository.getAllExperts();
+        for (Expert expert:experts) {
+            if(expert.checkAvailability(start, end)){
+                check = true;
+                expertID = expert.getId();
+                break;
+            }
+        }
 
-        ((Client) InstitutionConsole.getCurrentUser()).requestService(service);
+        if (!check) {
+            System.out.println("No available experts at that time");
+            return;
+        }
+
+        check = ((Client)InstitutionConsole.getCurrentUser()).checkDoubleBooking(start, end);
+
+        if (check) {
+            System.out.println("Cannot perform double booking");
+            return;
+        }
+
+        Service service = new Service(type, start, end, details, ((Client) InstitutionConsole.getCurrentUser()).getId(), expertID);
+        ServiceRepository.createService(service);
+        System.out.println("Service created");
     }
 
 }

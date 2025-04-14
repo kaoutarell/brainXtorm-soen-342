@@ -49,4 +49,9 @@ public class AuctionHouse {
         return AuctionHouseRepository.deleteAuctionHouse(this);
     }
 
+    @Override
+    public String toString(){
+        return ("Location: "+this.getLocation()+" / Description: "+this.getDescription());
+    }
+
 }

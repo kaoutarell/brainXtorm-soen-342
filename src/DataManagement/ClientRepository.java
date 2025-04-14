@@ -5,6 +5,7 @@ import SystemLogic.Client;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ClientRepository {
     private static final String FILE_PATH = "src/DataManagement/data/clients.csv";
@@ -17,7 +18,7 @@ public class ClientRepository {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length == 8) {  // Ensure it matches the number of fields in Client (including UUID)
-                    Client client = new Client(data[1], data[2], data[3], data[4], data[5], data[6]);
+                    Client client = new Client(UUID.fromString(data[0]),data[1], data[2], data[3], data[4], data[5], data[6]);
                     client.setStatus(data[7]);  // Status wasn't accessible, so added setter
                     clients.add(client);
                 }

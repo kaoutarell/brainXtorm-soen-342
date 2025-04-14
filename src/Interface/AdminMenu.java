@@ -84,7 +84,7 @@ public class AdminMenu extends Menu{
 
     private void updateObject(){
         System.out.println("Select an object to update");
-        ArrayList<ObjectOfInterest> objects = ObjectOfInterestRepository.getListOfObjects();
+        List<ObjectOfInterest> objects = ObjectOfInterestRepository.getAllObjects();
         for (int i=0;i< objects.size();i++) {
             System.out.println(i+". "+objects.get(i).toString());
         }
@@ -131,7 +131,7 @@ public class AdminMenu extends Menu{
 
     private void deleteObject(){
         System.out.println("Select an object to delete:");
-        ArrayList<ObjectOfInterest> objects = ObjectOfInterestRepository.getListOfObjects();
+        List<ObjectOfInterest> objects = ObjectOfInterestRepository.getAllObjects();
         for (int i=0;i< objects.size();i++) {
             System.out.println(i+". "+objects.get(i).toString());
         }
@@ -198,9 +198,12 @@ public class AdminMenu extends Menu{
         String input = "";
         while(!input.equalsIgnoreCase("exit")){
             input = scan.nextLine();
-            expertise.add(new AreaOfExpertise("Expertise", input));
+            if(!input.equalsIgnoreCase("exit")){
+                expertise.add(new AreaOfExpertise("Expertise", input));
+            }
+
         }
-        Expert expert = new Expert(username, password, name, licenceNumber, contactInfo, expertise);
+        Expert expert = new Expert(username, password, name, licenceNumber, contactInfo, expertise, new ArrayList<>());
         boolean response = expert.add();
         if(response){
             System.out.println("Expert created");

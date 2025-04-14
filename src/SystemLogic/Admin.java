@@ -33,6 +33,7 @@ public class Admin extends User {
 
 
     public void approveSignUp(){
+        Scanner scan = new Scanner(System.in);
         ArrayList<Client> pendingClients = ClientRepository.getClientByStatus("pending");
         Client chosenClient=null;
         int input;
@@ -42,13 +43,12 @@ public class Admin extends User {
         int i=0;
         for (Client client: pendingClients) {
             System.out.println(i+": "+client.getUsername());
+            i++;
         }
-        try (Scanner scan = new Scanner(System.in)) {
             try{
                 input = Integer.parseInt(scan.nextLine());
                 if (input>=pendingClients.size() || input<0){
                     System.out.println("Invalid input");
-                    scan.close();
                     approveSignUp();
                     return;
                 }else{
@@ -56,13 +56,12 @@ public class Admin extends User {
                 }
             }catch(Exception e){
                 System.out.println("Invalid input");
-                scan.close();
                 approveSignUp();
                 return;
             }
             chosenClient=pendingClients.get(input);
 
-            while(choice==""){
+            while(choice.equals("")){
                 System.out.println("1. Approve");
                 System.out.println("2. Deny");
                 System.out.println("3. Go Back");
@@ -83,7 +82,7 @@ public class Admin extends User {
                         System.out.println("Invalid Input");
                 }
             }
-        }
+
 
     }
     

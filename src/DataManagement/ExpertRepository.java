@@ -1,6 +1,7 @@
 package DataManagement;
 
 import SystemLogic.AreaOfExpertise;
+import SystemLogic.Availability;
 import SystemLogic.Expert;
 
 import java.io.*;
@@ -20,7 +21,7 @@ public class ExpertRepository {
 
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length == 7) {
+                if (data.length >= 7) {
                     UUID id = UUID.fromString(data[0]);
                     String username = data[1];
                     String password = data[2];
@@ -28,8 +29,18 @@ public class ExpertRepository {
                     int license = Integer.parseInt(data[4]);
                     String contact = data[5];
                     String expertiseStr = data[6];
+                    ArrayList<Availability> availabilities;
+                    if(data.length==8){
+                        String availabilityStr = data[7];
+                        availabilities = Expert.parseAvailabilities(availabilityStr);
+                    }else{
+                        availabilities=new ArrayList<>();
+                    }
+
                     List<AreaOfExpertise> expertise = Expert.parseExpertise(expertiseStr);
-                    Expert expert = new Expert(id, username, password, name, license, contact, expertise);
+
+                    Expert expert = new Expert(id, username, password, name, license, contact, expertise, availabilities);
+                    expert.setServices(ServiceRepository.getServiceByExpert(id));
 
                     experts.add(expert);
                 }

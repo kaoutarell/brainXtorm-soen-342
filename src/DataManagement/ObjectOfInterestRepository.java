@@ -11,17 +11,6 @@ public class ObjectOfInterestRepository {
 
     private static final String FILE_PATH = "src/DataManagement/data/objects.csv";
 
-    // hardcoded for the tests only
-    public static ArrayList<ObjectOfInterest> getListOfObjects(){
-        //TODO
-        ArrayList<ObjectOfInterest> objects = new ArrayList<>();
-        objects.add(new ObjectOfInterest(false, "really cool vase"));
-        objects.add(new ObjectOfInterest(true, "an old yoyo"));
-        objects.add(new ObjectOfInterest(true, "Toyota AE86"));
-        objects.add(new ObjectOfInterest(false, "statue of a man"));
-        return objects;
-    }
-
     //CREATE
     public static void saveObject(ObjectOfInterest object) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
