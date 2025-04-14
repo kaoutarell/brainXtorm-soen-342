@@ -16,4 +16,16 @@ public class ObjectOfInterestRepository {
         return objects;
     }
 
+    public static boolean addObject(ObjectOfInterest o){
+        return true;
+    }
+
+    public static boolean updateObject(ObjectOfInterest o){
+        return true;
+    }
+
+    public static boolean deleteObject(ObjectOfInterest o){
+        return true;
+    }
+
 }

@@ -1,6 +1,8 @@
 package SystemLogic;
 
-import java.sql.Date;
+import DataManagement.AuctionRepository;
+
+import java.util.Date;
 
 public class Auction {
     private String name;
@@ -9,7 +11,6 @@ public class Auction {
     private String specialty;
     private String type;
     private AuctionHouse house;
-    private Viewing viewing;
 
     public String getName(){
         return this.name;
@@ -35,13 +36,6 @@ public class Auction {
         return this.house;
     }
 
-    public Viewing getViewing(){
-        if (this.type=="online"){
-            return null;
-        }else{
-            return this.viewing;
-        }
-    }
 
     public Auction(String name, Date startTime, Date endTime, String specialty, String type, AuctionHouse house){
         this.name=name;
@@ -50,10 +44,14 @@ public class Auction {
         this.specialty=specialty;
         this.type=type;
         this.house=house;
+    }
 
-        if (this.type!="online"){
-            viewing = new Viewing(name+" viewing", startTime);
-        }
+    public boolean add(){
+        return AuctionRepository.addAuction(this);
+    }
+
+    public boolean delete(){
+        return AuctionRepository.deleteAuction(this);
     }
 
     @Override

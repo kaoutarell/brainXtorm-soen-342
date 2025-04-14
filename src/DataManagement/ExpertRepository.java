@@ -11,4 +11,16 @@ public class ExpertRepository {
         return new ArrayList<>();
     }
 
+    public static boolean addExpert(Expert e){
+        return true;
+    }
+
+    public static boolean deleteExpert(Expert e){
+        return true;
+    }
+
+    public static boolean updateExpert(Expert e){
+        return true;
+    }
+
 }
