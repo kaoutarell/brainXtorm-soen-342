@@ -343,7 +343,7 @@ public class AdminMenu extends Menu{
             System.out.println("Invalid input");
             return;
         }
-        Auction auction = new Auction(name, startDate, endDate, specialty, type, auctionHouse);
+        Auction auction = new Auction(UUID.randomUUID(), name, startDate, endDate, specialty, type, auctionHouse);
         auction.add();
         System.out.println("Auction created");
 

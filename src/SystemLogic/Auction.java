@@ -6,8 +6,11 @@ import DataManagement.AuctionRepository;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 
 public class Auction {
+    private final UUID id;
     private String name;
     private Timestamp startTime; //timestamp and not date only -> fixed
     private Timestamp endTime;
@@ -20,7 +23,8 @@ public class Auction {
     ONLINE, NORMAL, IN_PERSON
 }
 
-    public Auction(String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type, AuctionHouse house) {
+    public Auction(UUID id, String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type, AuctionHouse house) {
+        this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -30,8 +34,9 @@ public class Auction {
         this.objects = new ArrayList<>();
     }
 
-    public Auction(String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type,
+    public Auction(UUID id, String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type,
                    AuctionHouse house, List<ObjectOfInterest> associatedObjects) {
+        this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -48,13 +53,16 @@ public class Auction {
     }
     
     // ensure objects list is initialized correctly  -- handles null lists 
-    public Auction(String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type,
+    public Auction(UUID id, String name, Timestamp startTime, Timestamp endTime, String specialty, AuctionType type,
                    AuctionHouse house, ObjectOfInterest obj) {
-        this(name, startTime, endTime, specialty, type, house, obj != null ? new ArrayList<>(List.of(obj)) : new ArrayList<>());
+        this(id, name, startTime, endTime, specialty, type, house, obj != null ? new ArrayList<>(List.of(obj)) : new ArrayList<>());
     }
 
 
-
+    public UUID getId() {
+        return id;
+    }
+    
     public String getName() {
         return name;
     }

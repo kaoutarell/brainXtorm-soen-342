@@ -21,9 +21,7 @@ public class InstitutionConsole{
 
     private static void displayMainMenu(){
         menu.displayMenuOptions();
-
         selectMainMenuOption();
-        
     }
 
     private static void selectMainMenuOption(){
